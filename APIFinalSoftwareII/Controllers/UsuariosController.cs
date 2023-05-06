@@ -86,7 +86,7 @@ namespace APIFinalSoftwareII.Controllers
         //======================================================= SET//
         [Route("Set")]
         [HttpPost]
-        public async Task<FinalSoftwareIIModel.GeneralResult> Set(APIFinalSoftwareII.Models.Usuario usuario)
+        public async Task<FinalSoftwareIIModel.GeneralResult> Set(APIFinalSoftwareII.Models.Usuario usuario, int vigente)
         {
             FinalSoftwareIIModel.GeneralResult generalResult = new FinalSoftwareIIModel.GeneralResult
             {
@@ -94,20 +94,27 @@ namespace APIFinalSoftwareII.Controllers
             };
             try
             {
-                Models.Usuario usuario1 = new Models.Usuario
+                if (vigente == 1)
                 {
-                    Usuario1 = usuario.Usuario1,
-                    Password = usuario.Password,
-                    TipoUsuario = usuario.TipoUsuario,
-                    RealizoVoto = usuario.RealizoVoto,
-                    Nombres = usuario.Nombres,
-                    Apellidos = usuario.Apellidos,
-                    Genero = usuario.Genero,
-                    Partido = usuario.Partido
-                };
-                _context.Usuarios.Add(usuario1);
-                await _context.SaveChangesAsync();
-                generalResult.Result = true;
+                    Models.Usuario usuario1 = new Models.Usuario
+                    {
+                        Usuario1 = usuario.Usuario1,
+                        Password = usuario.Password,
+                        TipoUsuario = usuario.TipoUsuario,
+                        RealizoVoto = usuario.RealizoVoto,
+                        Nombres = usuario.Nombres,
+                        Apellidos = usuario.Apellidos,
+                        Genero = usuario.Genero,
+                        Partido = usuario.Partido
+                    };
+                    _context.Usuarios.Add(usuario1);
+                    await _context.SaveChangesAsync();
+                    generalResult.Result = true;
+                }
+                else
+                {
+                    generalResult.Result = false;
+                }
             }
             catch (Exception ex)
             {
