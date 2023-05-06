@@ -6,7 +6,7 @@ namespace FinalSoftwareII.Functions
     public class APIService
     {
         private static readonly int timeout = 600;
-        private static readonly string baseurl = "https://localhost:7121/";
+        private static readonly string baseurl = "https://localhost:7187/";
 
         // ============================================================================================= Autenticacion
         public static async Task<FinalSoftwareII.Models.Token> AutenticacionGetToken(FinalSoftwareII.Models.Usuario usuario)
@@ -148,7 +148,6 @@ namespace FinalSoftwareII.Functions
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                //return JsonConvert.DeserializeObject<IEnumerable<ClasificacionPeliculasModel.Movie>>(await response.Content.ReadAsStringAsync());
                 return true;
             }
             else

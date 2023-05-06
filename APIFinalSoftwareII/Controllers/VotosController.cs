@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using APIFinalSoftwareII.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIFinalSoftwareII.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class VotoesController : Controller
     {
         private readonly FinalSoftwareContext _context;
@@ -18,150 +22,136 @@ namespace APIFinalSoftwareII.Controllers
             _context = context;
         }
 
-        // GET: Votoes
-        public async Task<IActionResult> Index()
-        {
-            var finalSoftwareContext = _context.Votos.Include(v => v.UsuarioNavigation);
-            return View(await finalSoftwareContext.ToListAsync());
-        }
-
-        // GET: Votoes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Votos == null)
-            {
-                return NotFound();
-            }
-
-            var voto = await _context.Votos
-                .Include(v => v.UsuarioNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (voto == null)
-            {
-                return NotFound();
-            }
-
-            return View(voto);
-        }
-
-        // GET: Votoes/Create
-        public IActionResult Create()
-        {
-            ViewData["Usuario"] = new SelectList(_context.Usuarios, "Usuario1", "Usuario1");
-            return View();
-        }
-
-        // POST: Votoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //======================================================= GET//
+        [Route("GetList")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Usuario,Partido,Hora,FechaVoto,Ip,VotosValidosTotales,VotosFraude")] Voto voto)
+        public async Task<IEnumerable<APIFinalSoftwareII.Models.Voto>> GetList()
         {
-            if (ModelState.IsValid)
+            //LuxHom1Context _moviesContext = new MoviesContext();
+            IEnumerable<APIFinalSoftwareII.Models.Voto> usuarios = await _context.Votos.Select(s =>
+            new APIFinalSoftwareII.Models.Voto
             {
-                _context.Add(voto);
+                Id = s.Id,
+                Usuario = s.Usuario,
+                Partido = s.Partido,
+                Hora = s.Hora,
+                FechaVoto = s.FechaVoto,
+                Ip = s.Ip,
+                VotosValidosTotales = s.VotosValidosTotales,
+                VotosFraude = s.VotosFraude
+            }
+            ).ToListAsync();
+            return usuarios;
+        }
+
+        //======================================================= SET//
+        [Route("Set")]
+        [HttpPost]
+        public async Task<FinalSoftwareIIModel.GeneralResult> Set(APIFinalSoftwareII.Models.Voto voto)
+        {
+            FinalSoftwareIIModel.GeneralResult generalResult = new FinalSoftwareIIModel.GeneralResult
+            {
+                Result = false
+            };
+            try
+            {
+                Models.Voto voto1 = new Models.Voto
+                {
+                    Id = voto.Id,
+                    Usuario = voto.Usuario,
+                    Partido = voto.Partido,
+                    Hora = voto.Hora,
+                    FechaVoto = voto.FechaVoto,
+                    Ip = voto.Ip,
+                    VotosValidosTotales = voto.VotosValidosTotales,
+                    VotosFraude = voto.VotosFraude
+                };
+                _context.Votos.Add(voto1);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                generalResult.Result = true;
             }
-            ViewData["Usuario"] = new SelectList(_context.Usuarios, "Usuario1", "Usuario1", voto.Usuario);
-            return View(voto);
+            catch (Exception ex)
+            {
+                generalResult.Result = false;
+                generalResult.ErrorMessage = ex.Message;
+            }
+            return generalResult;
         }
 
-        // GET: Votoes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Votos == null)
-            {
-                return NotFound();
-            }
-
-            var voto = await _context.Votos.FindAsync(id);
-            if (voto == null)
-            {
-                return NotFound();
-            }
-            ViewData["Usuario"] = new SelectList(_context.Usuarios, "Usuario1", "Usuario1", voto.Usuario);
-            return View(voto);
-        }
-
-        // POST: Votoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //======================================================= UPDATE//
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("Update")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Usuario,Partido,Hora,FechaVoto,Ip,VotosValidosTotales,VotosFraude")] Voto voto)
+        public async Task<FinalSoftwareIIModel.GeneralResult> Update(APIFinalSoftwareII.Models.Voto voto)
         {
-            if (id != voto.Id)
+            FinalSoftwareIIModel.GeneralResult generalResult = new FinalSoftwareIIModel.GeneralResult
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+                Result = false
+            };
+            try
             {
-                try
+                Models.Voto voto1 = new Models.Voto
                 {
-                    _context.Update(voto);
+                    Id = voto.Id,
+                    Usuario = voto.Usuario,
+                    Partido = voto.Partido,
+                    Hora = voto.Hora,
+                    FechaVoto = voto.FechaVoto,
+                    Ip = voto.Ip,
+                    VotosValidosTotales = voto.VotosValidosTotales,
+                    VotosFraude = voto.VotosFraude
+                };
+                _context.Votos.Update(voto);
+                await _context.SaveChangesAsync();
+                generalResult.Result = true;
+            }
+            catch (Exception ex)
+            {
+                generalResult.Result = false;
+                generalResult.ErrorMessage = ex.Message;
+            }
+            return generalResult;
+        }
+
+        //======================================================= DELETE//
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("Delete")]
+        [HttpPost]
+        public async Task<FinalSoftwareIIModel.GeneralResult> Delete([FromBody] int id)
+        {
+            FinalSoftwareIIModel.GeneralResult generalResult = new FinalSoftwareIIModel.GeneralResult
+            {
+                Result = false
+            };
+            try
+            {
+                APIFinalSoftwareII.Models.Voto voto = await _context.Votos.Select(s =>
+                new APIFinalSoftwareII.Models.Voto
+                {
+                    Id = s.Id,
+                    Usuario = s.Usuario,
+                    Partido = s.Partido,
+                    Hora = s.Hora,
+                    FechaVoto = s.FechaVoto,
+                    Ip = s.Ip,
+                    VotosValidosTotales = s.VotosValidosTotales,
+                    VotosFraude = s.VotosFraude
+                }
+                ).FirstOrDefaultAsync(s => s.Id == id);
+                if (voto != null)
+                {
+                    _context.Votos.Remove(voto);
                     await _context.SaveChangesAsync();
+                    generalResult.Result = true;
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VotoExists(voto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["Usuario"] = new SelectList(_context.Usuarios, "Usuario1", "Usuario1", voto.Usuario);
-            return View(voto);
-        }
-
-        // GET: Votoes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Votos == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                generalResult.Result = false;
+                generalResult.ErrorMessage = ex.Message;
             }
-
-            var voto = await _context.Votos
-                .Include(v => v.UsuarioNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (voto == null)
-            {
-                return NotFound();
-            }
-
-            return View(voto);
-        }
-
-        // POST: Votoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Votos == null)
-            {
-                return Problem("Entity set 'FinalSoftwareContext.Votos'  is null.");
-            }
-            var voto = await _context.Votos.FindAsync(id);
-            if (voto != null)
-            {
-                _context.Votos.Remove(voto);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool VotoExists(int id)
-        {
-          return (_context.Votos?.Any(e => e.Id == id)).GetValueOrDefault();
+            return generalResult;
         }
     }
 }
