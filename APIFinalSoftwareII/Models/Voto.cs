@@ -17,9 +17,9 @@ public partial class Voto
 
     public string? Ip { get; set; }
 
-    public int VotosValidosTotales { get; set; }
+    public int? VotosValidosTotales { get; set; }
 
-    public int VotosFraude { get; set; }
+    public int? VotosFraude { get; set; }
 
     public virtual Usuario UsuarioNavigation { get; set; } = null!;
 }

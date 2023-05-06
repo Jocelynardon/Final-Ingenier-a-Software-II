@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Final_Software_II.Models;
+namespace FinalSoftwareII.Models;
 
 public partial class Voto
 {
@@ -17,9 +17,9 @@ public partial class Voto
 
     public string? Ip { get; set; }
 
-    public int VotosValidosTotales { get; set; }
+    public int? VotosValidosTotales { get; set; }
 
-    public int VotosFraude { get; set; }
+    public int? VotosFraude { get; set; }
 
     public virtual Usuario UsuarioNavigation { get; set; } = null!;
 }

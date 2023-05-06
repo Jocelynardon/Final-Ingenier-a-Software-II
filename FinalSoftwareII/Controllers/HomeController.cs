@@ -1,8 +1,8 @@
-﻿using Final_Software_II.Models;
+﻿using FinalSoftwareII.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Final_Software_II.Controllers
+namespace FinalSoftwareII.Controllers
 {
     public class HomeController : Controller
     {

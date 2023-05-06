@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Final_Software_II.Models;
+namespace FinalSoftwareII.Models;
 
 public partial class Usuario
 {
@@ -9,13 +9,13 @@ public partial class Usuario
 
     public string Password { get; set; } = null!;
 
-    public int TipoUsuario { get; set; }
+    public int? TipoUsuario { get; set; }
 
-    public sbyte RealizoVoto { get; set; }
+    public sbyte? RealizoVoto { get; set; }
 
-    public string Nombres { get; set; } = null!;
+    public string? Nombres { get; set; }
 
-    public string Apellidos { get; set; } = null!;
+    public string? Apellidos { get; set; }
 
     public string? Genero { get; set; }
 

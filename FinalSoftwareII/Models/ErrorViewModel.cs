@@ -1,4 +1,4 @@
-namespace Final_Software_II.Models
+namespace FinalSoftwareII.Models
 {
     public class ErrorViewModel
     {
