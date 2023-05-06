@@ -63,7 +63,7 @@ namespace APIFinalSoftwareII.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         //======================================================= GET//
         [Route("GetList")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IEnumerable<APIFinalSoftwareII.Models.Usuario>> GetList()
         {
             //LuxHom1Context _moviesContext = new MoviesContext();
@@ -155,7 +155,7 @@ namespace APIFinalSoftwareII.Controllers
         //======================================================= DELETE//
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("Delete")]
-        [HttpDelete]
+        [HttpPost]
         public async Task<FinalSoftwareIIModel.GeneralResult> Delete([FromBody] string usuario1)
         {
             FinalSoftwareIIModel.GeneralResult generalResult = new FinalSoftwareIIModel.GeneralResult
